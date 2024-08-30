@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+	<head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	 <style type='text/css'>
+		html { font-family:Helvetica; color:#222; }
+		h1 { color:steelblue; font-size:24px; margin-top:24px; }
+		button { margin:0 3px 10px; font-size:12px; }
+		.logLine { border-bottom:1px solid #ccc; padding:4px 2px; font-family:courier; font-size:11px; }
+	</style>
+  <title>Muti-Platform-Web</title>
+</head>
+<body>
+	<h1>Muti-Platform-Web</h1>
+	<button id='Info' >Get Result</button>
+	<script>
+	window.onerror = function(err) {
+		log('window.onerror: ' + err)
+	}
+
+	function webViewHandler(iosCallback, adrCallback) {
+    	if (getMobileOperatingSystem() === 'iOS') {
+        	setupWebViewJavascriptBridge(iosCallback);
+    	} else if (getMobileOperatingSystem() === 'Android') {
+        	connectWebViewJavascriptBridge(adrCallback);
+    	}
+ 
+		/*获取移动终端的操作系统,mobile*/
+		function getMobileOperatingSystem() {
+			var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+			if (/windows phone/i.test(userAgent)) {
+				return "Windows Phone";
+			}
+			if (/android/i.test(userAgent)) {
+				return "Android";
+			}
+			if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+				return "iOS";
+			}
+			return "unknown";
+    	}
+ 
+		/*设置页面js桥,mobile*/
+		function setupWebViewJavascriptBridge(callback) {
+			if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+			if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+			window.WVJBCallbacks = [callback];
+			var WVJBIframe = document.createElement('iframe');
+			WVJBIframe.style.display = 'none';
+			WVJBIframe.src = 'https://__bridge_loaded__';
+			document.documentElement.appendChild(WVJBIframe);
+			setTimeout(function () { document.documentElement.removeChild(WVJBIframe) }, 0)
+		}
+
+		/*连接页面js桥,mobile*/
+		function connectWebViewJavascriptBridge(callback) {
+			if (window.WebViewJavascriptBridge) {
+				callback(WebViewJavascriptBridge)
+			} else {
+				document.addEventListener(
+					'WebViewJavascriptBridgeReady'
+					, function () {
+						callback(WebViewJavascriptBridge)
+					},
+					false
+				);
+			}
+		}
+	}
+
+	// 注册js调用客户端iOS的方法
+	webViewHandler(function (bridge) {
+		//JsCallAppFuncName是js调用客户端iOS的方法名，params则是h5传给客户端app的参数,appCallbackHander是调用成功后js收到的回调。
+		handleCommomBridge(bridge)
+		document.getElementById('Info').onclick = function(e) {
+			e.preventDefault()
+			bridge.callHandler('testCallback', { "params": true }, function(response) {
+				log('JS got response', response)
+			})
+		}
+	}, function (bridge) {
+		// 初始化
+		bridge.init(function (message, responseCallback) {
+			responseCallback({ 'Javascript Responds': 'Wee!' });
+		});
+		handleCommomBridge(bridge)
+		// 方法参数和ios是一样的，只是Android必须要有初始化过程
+		//document.getElementById('Info').onclick = function(e) {
+		//	e.preventDefault()
+		//	let response = Android.callBackResult()
+			// window.WebViewJavascriptBridge.callHandler('testCallback', { 'params': true }, function (response) { 
+		//	log('JS got response', response)
+			//});
+		//}
+	})
+
+	var uniqueId = 1
+	function log(message, data) {
+		var log = document.getElementById('log')
+		var el = document.createElement('div')
+		var date = new Date()
+		el.className = 'logLine'
+		el.innerHTML = date.getHours() + ":" + date.getMinutes() + ":" 
+		+ date.getSeconds() + ' - ' + message + ':<br/>' + JSON.stringify(data)
+		if (log.children.length) { log.insertBefore(el, log.children[0]) }
+		else { log.appendChild(el) }
+	}
+
+	function handleCommomBridge(bridge) {
+		// AppCallJsFuncName是js注册的方法，供客户端iOS调用，callbackJsFunc是调用后js执行的回调
+		bridge.registerHandler('AppCallJsFuncName', function(data, responseCallback) {
+			var responseData = { 'Javascript Says':'Right back atcha!' }
+			log('JS responding with', responseData)
+			responseCallback(responseData)
+		});
+	}
+
+	document.getElementById('Info').onclick = function(e) {
+		e.preventDefault()
+		let response = Android.callBackResult()
+		// window.WebViewJavascriptBridge.callHandler('testCallback', { 'params': true }, function (response) { 
+		log('JS response', response)
+			//});
+	}
+	</script>
+	<div id='buttons'></div> <div id='log'></div>
+</body></html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Muti-Platform-Web</title>
+</head>
+<body>
+
+<h1>This is a Heading</h1>
+<p>This is a paragraph.</p>
+<button onClick="callbackResult()">Get Result</button>
+<button onClick="showAndroidToast()">Show Result</button>
+
+<script type="text/javascript">
+    let result = ""
+    function showAndroidToast() {
+       Android.showToast("result is: " + result);
+    }
+    function callbackResult() {
+        result = Android.callBackResult();
+        Android.showToast("callBackResult is: " + result);
+    }
+</script>
+</body>
+</html>
