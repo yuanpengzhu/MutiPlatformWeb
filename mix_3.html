@@ -59,7 +59,7 @@
 			}
 		}, function (bridge) {
 			document.getElementById('Info').onclick = function (e) {
-				let response = Android.callBackResult()
+				let response = bridge.callBackResult()
 				log('Android JS response', response)
 			}
 		})
