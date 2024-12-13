@@ -49,6 +49,7 @@
 	</div>
 	<br />
 	<button id='Info'>Get Result</button>
+	<button id='back'>Go Back</button>
 	<script>
 		// Register js to call the client method
 		webViewHandler(function (bridge) {
@@ -59,6 +60,19 @@
 			}
 		}, function (bridge) {
 			document.getElementById('Info').onclick = function (e) {
+				let response = bridge.callBackResult()
+				log('Android JS response', response)
+			}
+		})
+
+		webViewHandler(function (bridge) {
+			document.getElementById('back').onclick = function (e) {
+				bridge.callHandler('SDKGoBack', { "params": "xxx" }, function (response) {
+					log('IOS JS response', response)
+				})
+			}
+		}, function (bridge) {
+			document.getElementById('back').onclick = function (e) {
 				let response = bridge.callBackResult()
 				log('Android JS response', response)
 			}

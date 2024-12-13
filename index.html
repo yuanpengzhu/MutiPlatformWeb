@@ -7,14 +7,34 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
     />
     <title>Muti-Platform-Web</title>
+    <script src="lfsdk.js"></script>
   </head>
   <body>
     <div>
+      <br/>
       <a href="ios.html" id="ios">ios</a>
       <br/>
       <a href="android.html" id="android">android</a>
       <br/>
       <a href="mix.html" id="mix">mix</a>
+      <br/>
+      <br/>
+      <br/>
+      <button id='back'>Go Back</button>
     </div>
+    <script>
+      webViewHandler(function (bridge) {
+        document.getElementById('back').onclick = function (e) {
+          bridge.callHandler('SDKGoBack', { "params": "xxx" }, function (response) {
+            log('IOS JS response', response)
+          })
+        }
+      }, function (bridge) {
+        document.getElementById('back').onclick = function (e) {
+          let response = bridge.callBackResult()
+          log('Android JS response', response)
+        }
+      })
+    </script>
   </body>
 </html>
