@@ -58,23 +58,16 @@
 					log('IOS JS response', response)
 				})
 			}
+			document.getElementById('back').onclick = function (e) {
+				bridge.callHandler('SDKGoBack', {}, function (response) {})
+			}
 		}, function (bridge) {
 			document.getElementById('Info').onclick = function (e) {
 				let response = bridge.callBackResult()
 				log('Android JS response', response)
 			}
-		})
-
-		webViewHandler(function (bridge) {
 			document.getElementById('back').onclick = function (e) {
-				bridge.callHandler('SDKGoBack', { "params": "xxx" }, function (response) {
-					log('IOS JS response', response)
-				})
-			}
-		}, function (bridge) {
-			document.getElementById('back').onclick = function (e) {
-				let response = bridge.callBackResult()
-				log('Android JS response', response)
+				bridge.SDKGoBack()
 			}
 		})
 
