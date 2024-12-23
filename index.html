@@ -31,11 +31,11 @@
     <script>
       webViewHandler(function (bridge) {
         document.getElementById('back').onclick = function (e) {
-          bridge.callHandler('SDKGoBack', {}, function (response) {})
+          bridge.callHandler('eventClose', {}, function (response) {})
         }
       }, function (bridge) {
         document.getElementById('back').onclick = function (e) {
-          bridge.SDKGoBack()
+          bridge.eventClose()
         }
       })
     </script>

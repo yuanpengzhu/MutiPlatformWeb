@@ -59,7 +59,7 @@
 				})
 			}
 			document.getElementById('back').onclick = function (e) {
-				bridge.callHandler('SDKGoBack', {}, function (response) {})
+				bridge.callHandler('eventClose', {}, function (response) {})
 			}
 		}, function (bridge) {
 			document.getElementById('Info').onclick = function (e) {
@@ -67,7 +67,7 @@
 				log('Android JS response', response)
 			}
 			document.getElementById('back').onclick = function (e) {
-				bridge.SDKGoBack()
+				bridge.eventClose()
 			}
 		})
 
