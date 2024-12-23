@@ -33,7 +33,7 @@ function webViewHandler(iosCallback, adrCallback) {
 	}
 
 	function connectWebViewJavascriptBridge(callback) {
-		if (window.Android) { return callback(Android); }
+		if (window.Platform) { return callback(Platform); }
 		callback();
 	}
 }
